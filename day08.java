@@ -15,10 +15,11 @@ public class day08 {
                     destinations.put(start, directions);
 
                 });
+        int circle = 0;
         int steps = 0;
         String start = "AAA";
 
-        while (!"ZZZ".equals(start)){
+        while (true){
             for (char instruction : instructions) {
                 if (instruction == 'L') {
                     start = destinations.get(start).get(0);
@@ -26,11 +27,16 @@ public class day08 {
                     start = destinations.get(start).get(1);
                 }
                 steps++;
-                if ("ZZZ".equals(start)) break;
+                if (start.endsWith("Z")) {
+                    if (circle==2) {
+                        System.out.println(steps);
+                        return;
+                    } else {
+                        circle++ ;
+                    }
+                }
             }
         }
-
-        System.out.println(steps);
     }
 
     private static final String EXAMPLE =
