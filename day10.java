@@ -1,4 +1,7 @@
-public class day10 {
+import java.util.ArrayList;
+import java.util.List;
+
+public class day10VariantTwo {
     private static String[][] matrix = null;
     private static int animalRow;
     private static int animalCol;
@@ -6,8 +9,9 @@ public class day10 {
     private static boolean notFound;
 
     public static void main(String[] args) {
-        
+
         fillMatrix();
+//        Arrays.stream(matrix).forEach(s -> System.out.println(Arrays.toString(s)));
         reset();
         nextStep(animalRow-1, animalCol, matrix[animalRow][animalCol], "N");
         if (notFound) {
@@ -31,18 +35,26 @@ public class day10 {
         steps = 0;
     }
 
-    private static void nextStep(int row, int col, String currentSymbol, String destination) {
-        if (isInTheMatrix(row, col)) {
+    private static void nextStep(int row, int col, String symbol, String destination) {
+//        String[][] matrixFind = new String[matrix.length][matrix[0].length];
+//        List<Integer> rowCoordinates = new ArrayList<>();
+//        List<Integer> colCoordinates = new ArrayList<>();
+//        for (String[] strings : matrixFind) {
+//            Arrays.fill(strings, ".");
+//        }
+        String currentSymbol = symbol;
+        String nextSymbol = "";
+
+        while (!isInTheMatrix(row, col) || !".".equals(nextSymbol = matrix[row][col])) {
             steps++;
-            String nextSymbol = matrix[row][col];
 
-            if(".".equals(nextSymbol)) {
-                notFound = true;
-                return;
-            }
-
+//            matrixFind[row][col] = "0";
             if("S".equals(nextSymbol)) {
                 System.out.println(Math.floor(steps/2.0));
+//                Arrays.stream(matrixFind).forEach(s -> System.out.println(Arrays.toString(s)));
+//                rowCoordinates.forEach(r -> System.out.print(r + ","));
+//                System.out.println();
+//                colCoordinates.forEach(c -> System.out.print(c + ","));
                 return;
             }
 
@@ -50,271 +62,493 @@ public class day10 {
                 case "S":
                     switch (nextSymbol) {
                         case "|" -> {
-                            if ("N".equals(destination)) nextStep(row - 1, col, nextSymbol, "N");
-                            if ("S".equals(destination)) nextStep(row + 1, col, nextSymbol, "S");
-                            notFound = true;
-                            return;
+                            if ("N".equals(destination)) {
+                                row -= 1;
+
+                            } else if ("S".equals(destination)) {
+                                row += 1;
+
+                            } else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         case "F" -> {
-                            if ("N".equals(destination)) nextStep(row, col + 1, nextSymbol, "E");
-                            notFound = true;
-                            return;
+                            if ("N".equals(destination)) {
+                                destination = "E";
+                                col += 1;
+
+                            } else if ("W".equals(destination)) {
+                                destination = "S";
+                                row += 1;
+
+                            } else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         case "-" -> {
-                            if ("E".equals(destination)) nextStep(row, col + 1, nextSymbol, "E");
-                            if ("W".equals(destination)) nextStep(row, col - 1, nextSymbol, "W");
-                            notFound = true;
-                            return;
+                            if ("E".equals(destination)) {
+                                col += 1;
+
+                            } else if ("W".equals(destination)) {
+                                col -= 1;
+                            } else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         case "L" -> {
-                            if ("S".equals(destination)) nextStep(row, col + 1, nextSymbol, "E");
-                            notFound = true;
-                            return;
+                            if ("S".equals(destination)) {
+                                destination = "E";
+                                col += 1;
+
+                            } else if ("W".equals(destination)){
+                                destination = "N";
+                                row -= 1;
+                            } else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         case "J" -> {
-                            if ("S".equals(destination)) nextStep(row - 1, col, nextSymbol, "W");
-                            notFound = true;
-                            return;
+                            if ("S".equals(destination)) {
+                                destination = "W";
+                                col -= 1;
+
+                            } else if ("E".equals(destination)){
+                                destination = "N";
+                                row -= 1;
+                            } else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         case "7" -> {
-                            if ("N".equals(destination)) nextStep(row - 1, col - 1, nextSymbol, "W");
-                            notFound = true;
-                            return;
+                            if ("N".equals(destination)) {
+                                destination = "W";
+                                col -= 1;
+
+                            } else if ("E".equals(destination)){
+                                destination = "S";
+                                row += 1;
+                            } else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         default -> {
                             notFound = true;
                             return;
                         }
                     }
+                    break;
 
                 case "|":
                     switch (nextSymbol) {
                         case "|" -> {
-                            if ("N".equals(destination)) nextStep(row - 1, col, nextSymbol, "S");
-                            if ("S".equals(destination)) nextStep(row + 1, col, nextSymbol, "N");
-                            notFound = true;
-                            return;
+                            if ("S".equals(destination)) {
+                                row += 1;
+
+                            } else if ("N".equals(destination)){
+                                row -= 1;
+                            } else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         case "L" -> {
-                            if ("N".equals(destination)) nextStep(row, col + 1, nextSymbol, "E");
-                            notFound = true;
-                            return;
+                            if ("S".equals(destination)) {
+                                destination = "E";
+                                col += 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         case "J" -> {
-                            if ("N".equals(destination)) nextStep(row - 1, col, nextSymbol, "W");
-                            notFound = true;
-                            return;
+                            if ("S".equals(destination)) {
+                                destination = "W";
+                                col -= 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         case "7" -> {
-                            if ("S".equals(destination)) nextStep(row + 1, col + 1, nextSymbol, "W");
-                            notFound = true;
-                            return;
+                            if ("N".equals(destination)) {
+                                destination = "W";
+                                col -= 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         case "F" -> {
-                            if ("S".equals(destination)) nextStep(row+1, col + 1, nextSymbol, "E");
-                            notFound = true;
-                            return;
+                            if ("N".equals(destination)) {
+                                destination = "E";
+                                col += 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         default -> {
                             notFound = true;
                             return;
                         }
                     }
+                    break;
+
                 case "-":
                     switch (nextSymbol) {
                         case "-" -> {
-                            if ("W".equals(destination)) nextStep(row + 1, col, nextSymbol, "W");
-                            if ("E".equals(destination)) nextStep(row - 1, col, nextSymbol, "E");
-                            notFound = true;
-                            return;
+                            if ("W".equals(destination)) {
+                                col -= 1;
+
+                            } else if ("E".equals(destination)){
+                                col += 1;
+                            } else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         case "L" -> {
-                            if ("E".equals(destination)) nextStep(row-1, col-1, nextSymbol, "N");
-                            notFound = true;
-                            return;
+                            if ("W".equals(destination)) {
+                                destination = "N";
+                                row -= 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         case "J" -> {
-                            if ("W".equals(destination)) nextStep(row - 1, col+1, nextSymbol, "N");
-                            notFound = true;
-                            return;
+                            if ("E".equals(destination)) {
+                                destination = "N";
+                                row -= 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         case "7" -> {
-                            if ("W".equals(destination)) nextStep(row - 1, col - 1, nextSymbol, "S");
-                            notFound = true;
-                            return;
+                            if ("E".equals(destination)) {
+                                destination = "S";
+                                row += 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         case "F" -> {
-                            if ("E".equals(destination)) nextStep(row-1, col, nextSymbol, "S");
-                            notFound = true;
-                            return;
+                            if ("W".equals(destination)) {
+                                destination = "S";
+                                row += 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         default -> {
                             notFound = true;
                             return;
                         }
                     }
+                    break;
 
                 case "L":
+//                    rowCoordinates.add(row);
+//                    colCoordinates.add(col);
                     switch (nextSymbol) {
                         case "-" -> {
-                            if ("W".equals(destination)) nextStep(row + 1, col, nextSymbol, "W");
-                            if ("E".equals(destination)) nextStep(row - 1, col, nextSymbol, "E");
-                            notFound = true;
-                            return;
+                            if ("E".equals(destination)) {
+                                col += 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
                         }
-                        case "L" -> {
-                            if ("E".equals(destination)) nextStep(row-1, col-1, nextSymbol, "N");
-                            notFound = true;
-                            return;
-                        }
+
                         case "J" -> {
-                            if ("W".equals(destination)) nextStep(row - 1, col+1, nextSymbol, "N");
-                            notFound = true;
-                            return;
+                            if ("E".equals(destination)) {
+                                destination = "N";
+                                row -= 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         case "7" -> {
-                            if ("W".equals(destination)) nextStep(row - 1, col - 1, nextSymbol, "S");
-                            notFound = true;
-                            return;
+                            if ("N".equals(destination)) {
+                                destination = "W";
+                                col -= 1;
+
+                            } else if ("E".equals(destination)){
+                                destination = "S";
+                                row += 1;
+                            } else {
+                                notFound = true;
+                                return;
+                            }
                         }
                         case "F" -> {
-                            if ("E".equals(destination)) nextStep(row-1, col, nextSymbol, "S");
-                            notFound = true;
-                            return;
+                            if ("N".equals(destination)) {
+                                destination = "E";
+                                col += 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
                         }
+                        case "|" -> {
+                            if ("N".equals(destination)) {
+                                row -= 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
+                        }
+
                         default -> {
                             notFound = true;
                             return;
                         }
-                        //| is a vertical pipe connecting north and south.
-                        //- is a horizontal pipe connecting east and west.
-                        //L is a 90-degree bend connecting north and east.
-                        //J is a 90-degree bend connecting north and west.
-                        //7 is a 90-degree bend connecting south and west.
-                        //F is a 90-degree bend connecting south and east.
                     }
+                    break;
 
                 case "J":
+//                    rowCoordinates.add(row);
+//                    colCoordinates.add(col);
                     switch (nextSymbol) {
                         case "-" -> {
-                            if ("W".equals(destination)) nextStep(row + 1, col, nextSymbol, "W");
-                            if ("E".equals(destination)) nextStep(row - 1, col, nextSymbol, "E");
-                            notFound = true;
-                            return;
+                            if ("W".equals(destination)) {
+                                col -= 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         case "L" -> {
-                            if ("E".equals(destination)) nextStep(row-1, col-1, nextSymbol, "N");
-                            notFound = true;
-                            return;
+                            if ("W".equals(destination)) {
+                                destination = "N";
+                                row -= 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
                         }
-                        case "J" -> {
-                            if ("W".equals(destination)) nextStep(row - 1, col+1, nextSymbol, "N");
-                            notFound = true;
-                            return;
+
+                        case "|" -> {
+                            if ("N".equals(destination)) {
+                                row -= 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
                         }
                         case "7" -> {
-                            if ("W".equals(destination)) nextStep(row - 1, col - 1, nextSymbol, "S");
-                            notFound = true;
-                            return;
+                            if ("N".equals(destination)) {
+                                destination = "W";
+                                col -= 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         case "F" -> {
-                            if ("E".equals(destination)) nextStep(row-1, col, nextSymbol, "S");
-                            notFound = true;
-                            return;
+                            if ("N".equals(destination)) {
+                                destination = "E";
+                                col += 1;
+
+                            } else if ("W".equals(destination)){
+                                destination = "S";
+                                row += 1;
+                            } else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         default -> {
                             notFound = true;
                             return;
                         }
-                        //| is a vertical pipe connecting north and south.
-                        //- is a horizontal pipe connecting east and west.
-                        //L is a 90-degree bend connecting north and east.
-                        //J is a 90-degree bend connecting north and west.
-                        //7 is a 90-degree bend connecting south and west.
-                        //F is a 90-degree bend connecting south and east.
                     }
+                    break;
+
                 case "7":
+//                    rowCoordinates.add(row);
+//                    colCoordinates.add(col);
                     switch (nextSymbol) {
                         case "-" -> {
-                            if ("W".equals(destination)) nextStep(row + 1, col, nextSymbol, "W");
-                            if ("E".equals(destination)) nextStep(row - 1, col, nextSymbol, "E");
-                            notFound = true;
-                            return;
+                            if ("W".equals(destination)) {
+                                col -= 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
+                        case "|" -> {
+                            if ("S".equals(destination)) {
+                                row += 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
+                        }
+
                         case "L" -> {
-                            if ("E".equals(destination)) nextStep(row-1, col-1, nextSymbol, "N");
-                            notFound = true;
-                            return;
+                            if ("S".equals(destination)) {
+                                destination = "E";
+                                col += 1;
+
+                            } else if ("W".equals(destination)){
+                                destination = "N";
+                                row -= 1;
+                            } else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         case "J" -> {
-                            if ("W".equals(destination)) nextStep(row - 1, col+1, nextSymbol, "N");
-                            notFound = true;
-                            return;
+                            if ("S".equals(destination)) {
+                                destination = "W";
+                                col -= 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
                         }
-                        case "7" -> {
-                            if ("W".equals(destination)) nextStep(row - 1, col - 1, nextSymbol, "S");
-                            notFound = true;
-                            return;
-                        }
+
                         case "F" -> {
-                            if ("E".equals(destination)) nextStep(row-1, col, nextSymbol, "S");
-                            notFound = true;
-                            return;
+                            if ("W".equals(destination)) {
+                                destination = "S";
+                                row += 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         default -> {
                             notFound = true;
                             return;
                         }
-                        //| is a vertical pipe connecting north and south.
-                        //- is a horizontal pipe connecting east and west.
-                        //L is a 90-degree bend connecting north and east.
-                        //J is a 90-degree bend connecting north and west.
-                        //7 is a 90-degree bend connecting south and west.
-                        //F is a 90-degree bend connecting south and east.
                     }
+                    break;
+
                 case "F":
+//                    rowCoordinates.add(row);
+//                    colCoordinates.add(col);
                     switch (nextSymbol) {
                         case "-" -> {
-                            if ("W".equals(destination)) nextStep(row + 1, col, nextSymbol, "W");
-                            if ("E".equals(destination)) nextStep(row - 1, col, nextSymbol, "E");
-                            notFound = true;
-                            return;
+                            if ("E".equals(destination)) {
+                                col += 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
+                        }
+
+                        case "|" -> {
+                            if ("S".equals(destination)) {
+                                row += 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
                         }
                         case "L" -> {
-                            if ("E".equals(destination)) nextStep(row-1, col-1, nextSymbol, "N");
-                            notFound = true;
-                            return;
+                            if ("S".equals(destination)) {
+                                destination = "E";
+                                col += 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         case "J" -> {
-                            if ("W".equals(destination)) nextStep(row - 1, col+1, nextSymbol, "N");
-                            notFound = true;
-                            return;
+                            if ("S".equals(destination)) {
+                                destination = "W";
+                                col -= 1;
+
+                            } else if ("E".equals(destination)){
+                                destination = "N";
+                                row -= 1;
+                            } else {
+                                notFound = true;
+                                return;
+                            }
                         }
+
                         case "7" -> {
-                            if ("W".equals(destination)) nextStep(row - 1, col - 1, nextSymbol, "S");
-                            notFound = true;
-                            return;
+                            if ("E".equals(destination)) {
+                                destination = "S";
+                                row += 1;
+
+                            }  else {
+                                notFound = true;
+                                return;
+                            }
                         }
-                        case "F" -> {
-                            if ("E".equals(destination)) nextStep(row-1, col, nextSymbol, "S");
-                            notFound = true;
-                            return;
-                        }
+
                         default -> {
                             notFound = true;
                             return;
                         }
-                        //| is a vertical pipe connecting north and south.
-                        //- is a horizontal pipe connecting east and west.
-                        //L is a 90-degree bend connecting north and east.
-                        //J is a 90-degree bend connecting north and west.
-                        //7 is a 90-degree bend connecting south and west.
-                        //F is a 90-degree bend connecting south and east.
                     }
+                    break;
             }
-        } else {
-            notFound = true;
+
+            currentSymbol = nextSymbol;
         }
+
+        notFound = true;
     }
 
     private static boolean isInTheMatrix(int row, int col) {
