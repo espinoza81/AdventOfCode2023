@@ -1,19 +1,14 @@
+import java.math.BigInteger;
 import java.util.*;
 
 public class day11 {
 
-
-    private static final List<StringBuilder> rows = new ArrayList<>();
     private static final Set<Integer> indexesEmptyCol = new TreeSet<>();
-    private static final List<int[]> planetIndexes = new ArrayList<>();
+    private static final List<long[]> planetIndexes = new ArrayList<>();
 
     public static void main(String[] args) {
 
         fillIndexesOfEmptyCol();
-
-        fillListOfRows();
-
-        expandTheGalaxy();
 
         extractPlanetIndexes();
 
@@ -21,51 +16,17 @@ public class day11 {
     }
 
     private static void findSumOfPath() {
-        long sum = 0L;
+        BigInteger sum = BigInteger.ZERO;
         for(int i = 0; i < planetIndexes.size(); i++) {
             for(int j = i+1; j < planetIndexes.size(); j++) {
-                int planetOneRow = planetIndexes.get(i)[0];
-                int planetOneCol = planetIndexes.get(i)[1];
-                int planetTwoRow = planetIndexes.get(j)[0];
-                int planetTwoCol = planetIndexes.get(j)[1];
-                sum += Math.abs(planetOneRow-planetTwoRow) + Math.abs(planetOneCol-planetTwoCol);
+                long planetOneRow = planetIndexes.get(i)[0];
+                long planetOneCol = planetIndexes.get(i)[1];
+                long planetTwoRow = planetIndexes.get(j)[0];
+                long planetTwoCol = planetIndexes.get(j)[1];
+                sum = sum.add(BigInteger.valueOf(Math.abs(planetOneRow-planetTwoRow) + Math.abs(planetOneCol-planetTwoCol)));
             }
         }
         System.out.println(sum);
-    }
-
-    private static void extractPlanetIndexes() {
-        for (int i = 0; i < rows.size(); i++) {
-            StringBuilder row = rows.get(i);
-            int index = 0;
-            while((index = row.indexOf("#", index)) != -1){
-                planetIndexes.add(new int[]{i, index});
-                index++;
-            }
-        }
-    }
-
-    private static void expandTheGalaxy() {
-        int offset = 0;
-        for (Integer index : indexesEmptyCol) {
-            Integer finalOffset = offset;
-            rows.forEach(r -> r.insert(index+ finalOffset, "."));
-            offset++;
-        }
-    }
-
-    private static void fillListOfRows() {
-        Arrays.stream(INPUT.split("\n")).forEach(r -> {
-            rows.add(new StringBuilder(r));
-            if(!r.contains("#")) {
-                rows.add(new StringBuilder(r));
-            }
-            int index = 0;
-            while((index = r.indexOf("#", index)) != -1){
-                indexesEmptyCol.remove(index);
-                index++;
-            }
-        });
     }
 
     private static void fillIndexesOfEmptyCol() {
@@ -73,6 +34,40 @@ public class day11 {
         for (int i = 0; i < length; i++) {
             indexesEmptyCol.add(i);
         }
+    }
+
+    private static void extractPlanetIndexes() {
+        extractPlanetRowIndex();
+        extractPlanetColIndex();
+    }
+
+    private static void extractPlanetRowIndex() {
+        final long[] rowIndex = {0L};
+        Arrays.stream(INPUT.split("\n")).forEach(r -> {
+            int index = 0;
+            while((index = r.indexOf("#", index)) != -1){
+                indexesEmptyCol.remove(index);
+                planetIndexes.add(new long[]{rowIndex[0], index});
+                index++;
+            }
+            rowIndex[0] = r.contains("#") ? rowIndex[0]+1 : rowIndex[0] + 1000000;
+//            rowIndex[0] = r.contains("#") ? rowIndex[0]+1 : rowIndex[0] + 2;
+        });
+    }
+
+    private static void extractPlanetColIndex() {
+       long expandCoefficient = 999999;
+//        long expandCoefficient = 1;
+        long offset = 0;
+        for (Integer index : indexesEmptyCol) {
+            for (long[] planetIndex : planetIndexes) {
+                if (planetIndex[1] >= index + offset * expandCoefficient) {
+                    planetIndex[1] = planetIndex[1] + expandCoefficient;
+                }
+            }
+            offset++;
+        }
+
     }
 
     private static final String INPUT = """
